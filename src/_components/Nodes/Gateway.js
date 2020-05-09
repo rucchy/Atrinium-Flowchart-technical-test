@@ -1,10 +1,16 @@
+import Out from '../Ports/Out'
 import { Rhombus } from 'jointjs/src/shapes/basic'
 
 export default () => {
-  const gateway = new Rhombus()
+  const gateway = new Rhombus({
+    position: { x: 300, y: 180 },
+    size: { width: 80, height: 80 },
+    ports: {
+      groups: Out(),
+    },
+  })
 
-  gateway.position(300, 180)
-  gateway.resize(80, 80)
+  gateway.addPort({ group: 'out' })
   gateway.attr({
     path: {
       fill: '#FFCE9F',

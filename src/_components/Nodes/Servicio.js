@@ -1,10 +1,16 @@
+import Out from '../Ports/Out'
 import { Polygon } from 'jointjs/src/shapes/standard'
 
 export default () => {
-  const servicio = new Polygon()
+  const servicio = new Polygon({
+    position: { x: 200, y: 180 },
+    size: { width: 80, height: 80 },
+    ports: {
+      groups: Out(),
+    },
+  })
 
-  servicio.position(200, 180)
-  servicio.resize(80, 80)
+  servicio.addPort({ group: 'out' })
   servicio.attr({
     text: {
       text: 'Servicio',

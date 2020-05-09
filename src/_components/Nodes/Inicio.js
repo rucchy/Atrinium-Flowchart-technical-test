@@ -1,10 +1,16 @@
 import { Circle } from 'jointjs/src/shapes/basic'
+import Out from '../Ports/Out'
 
 export default () => {
-  const inicio = new Circle()
+  const inicio = new Circle({
+    position: { x: 100, y: 30 },
+    size: { width: 60, height: 60 },
+    ports: {
+      groups: Out(),
+    },
+  })
 
-  inicio.position(100, 30)
-  inicio.resize(50, 50)
+  inicio.addPort({ group: 'out' })
   inicio.attr({
     circle: {
       fill: '#F8CECC',

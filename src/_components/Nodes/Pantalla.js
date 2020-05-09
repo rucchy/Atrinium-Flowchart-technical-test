@@ -1,10 +1,16 @@
+import Out from '../Ports/Out'
 import { Rect } from 'jointjs/src/shapes/basic'
 
 export default () => {
-  const pantalla = new Rect()
+  const pantalla = new Rect({
+    position: { x: 400, y: 180 },
+    size: { width: 80, height: 80 },
+    ports: {
+      groups: Out(),
+    },
+  })
 
-  pantalla.position(400, 180)
-  pantalla.resize(80, 80)
+  pantalla.addPort({ group: 'out' })
   pantalla.attr({
     rect: {
       fill: '#FFE599',
