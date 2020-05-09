@@ -2,6 +2,7 @@ import { Form, Input, InputNumber } from 'antd'
 import React, { useEffect } from 'react'
 
 import { SHAPES_DEFAULT_SIZE } from './Nodes/constants'
+import sendServer from '../_helpers/sendServer'
 import { useSelector } from 'react-redux'
 
 export default () => {
@@ -25,14 +26,23 @@ export default () => {
     switch (field) {
       case 'texto':
         nodo.attr('text/text', changedValues.texto)
+        sendServer('changeNameNode', {
+          id: 1,
+          name: changedValues.texto,
+        })
         break
       case 'width':
         if (
           !isNaN(changedValues.width) &&
           changedValues.width >= SHAPES_DEFAULT_SIZE[nodo.attributes.type]
-        )
+        ) {
           nodo.resize(changedValues.width, allValues.height)
-        if (changedValues.height === null) {
+          sendServer('changeWidthNode', {
+            id: 1,
+            width: changedValues.width,
+          })
+        }
+        if (changedValues.width === null) {
           form.setFieldsValue({
             width: SHAPES_DEFAULT_SIZE[nodo.attributes.type],
           })
@@ -40,6 +50,10 @@ export default () => {
             SHAPES_DEFAULT_SIZE[nodo.attributes.type],
             allValues.height,
           )
+          sendServer('changeWidthNode', {
+            id: 1,
+            width: SHAPES_DEFAULT_SIZE[nodo.attributes.type],
+          })
         }
         break
       case 'height':
@@ -48,6 +62,10 @@ export default () => {
           changedValues.height >= SHAPES_DEFAULT_SIZE[nodo.attributes.type]
         )
           nodo.resize(allValues.width, changedValues.height)
+        sendServer('changeHeightNode', {
+          id: 1,
+          height: changedValues.height,
+        })
         if (changedValues.height === null) {
           form.setFieldsValue({
             height: SHAPES_DEFAULT_SIZE[nodo.attributes.type],
@@ -56,6 +74,10 @@ export default () => {
             allValues.width,
             SHAPES_DEFAULT_SIZE[nodo.attributes.type],
           )
+          sendServer('changeHeightNode', {
+            id: 1,
+            height: SHAPES_DEFAULT_SIZE[nodo.attributes.type],
+          })
         }
         break
       default:
