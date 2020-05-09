@@ -3,7 +3,8 @@ export const addNode = (type) => ({
   nodeType: type,
 })
 
-export const changeForm = (node) => ({
+export const changeForm = (node, diagramId) => ({
   type: 'CHANGE_FORM',
   node: node,
+  diagramId: diagramId,
 })

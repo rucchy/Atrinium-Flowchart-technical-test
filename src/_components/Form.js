@@ -1,16 +1,34 @@
-import { Form, Input, InputNumber } from 'antd'
+import { Button, Form, Input, InputNumber } from 'antd'
 import React, { useEffect } from 'react'
+import {
+  SHAPES_DEFAULT_SIZE,
+  SHAPES_NODES,
+  SHAPES_NODES_INVERSE,
+} from './Nodes/constants'
+import { useDispatch, useSelector } from 'react-redux'
 
-import { SHAPES_DEFAULT_SIZE } from './Nodes/constants'
+import { changeForm } from '../_actions'
 import sendServer from '../_helpers/sendServer'
-import { useSelector } from 'react-redux'
 
 export default () => {
   const nodo = useSelector((store) => store.FormReducer.node)
+  const diagramId = useSelector((store) => store.FormReducer.diagramId)
+  const dispatch = useDispatch()
   const [form] = Form.useForm()
 
   useEffect(() => {
     if (nodo) {
+      sendServer('getNodo', {
+        diagramId: diagramId,
+        nodeId: nodo.id,
+        //Este parametro no habría que enviarlo pero lo utilizo para falsear los datos que devuelve el servidor
+        nodeType:
+          SHAPES_NODES_INVERSE[nodo.attributes.type] === 'INICIO' &&
+          nodo.attr('text/text') === 'Fin'
+            ? 'FIN'
+            : SHAPES_NODES_INVERSE[nodo.attributes.type],
+      })
+
       const tamano = nodo.size()
 
       form.setFieldsValue({
@@ -19,7 +37,7 @@ export default () => {
         height: tamano.height,
       })
     }
-  }, [form, nodo])
+  }, [form, diagramId, nodo])
 
   const changeText = (changedValues, allValues) => {
     const field = Object.keys(changedValues)[0]
@@ -27,7 +45,8 @@ export default () => {
       case 'texto':
         nodo.attr('text/text', changedValues.texto)
         sendServer('changeNameNode', {
-          id: 1,
+          diagramId: diagramId,
+          nodeId: nodo.id,
           name: changedValues.texto,
         })
         break
@@ -38,7 +57,8 @@ export default () => {
         ) {
           nodo.resize(changedValues.width, allValues.height)
           sendServer('changeWidthNode', {
-            id: 1,
+            diagramId: diagramId,
+            nodeId: nodo.id,
             width: changedValues.width,
           })
         }
@@ -51,7 +71,8 @@ export default () => {
             allValues.height,
           )
           sendServer('changeWidthNode', {
-            id: 1,
+            diagramId: diagramId,
+            nodeId: nodo.id,
             width: SHAPES_DEFAULT_SIZE[nodo.attributes.type],
           })
         }
@@ -63,7 +84,8 @@ export default () => {
         ) {
           nodo.resize(allValues.width, changedValues.height)
           sendServer('changeHeightNode', {
-            id: 1,
+            diagramId: diagramId,
+            nodeId: nodo.id,
             height: changedValues.height,
           })
         }
@@ -76,29 +98,79 @@ export default () => {
             SHAPES_DEFAULT_SIZE[nodo.attributes.type],
           )
           sendServer('changeHeightNode', {
-            id: 1,
+            diagramId: diagramId,
+            nodeId: nodo.id,
             height: SHAPES_DEFAULT_SIZE[nodo.attributes.type],
           })
         }
+        break
+      case 'caracteristicas':
+        sendServer(
+          'changeCaracteristicas' + SHAPES_NODES_INVERSE[nodo.attributes.type],
+          {
+            diagramId: diagramId,
+            nodeId: nodo.id,
+            ['caracteristicas' +
+            SHAPES_NODES_INVERSE[
+              nodo.attributes.type
+            ]]: changedValues.caracteristicas,
+          },
+        )
         break
       default:
     }
   }
 
+  const deleteNode = () => {
+    nodo.remove()
+    dispatch(changeForm())
+  }
+
   return (
     <div>
       {nodo && (
-        <Form form={form} layout="vertical" onValuesChange={changeText}>
-          <Form.Item label="Texto" name="texto">
-            <Input />
-          </Form.Item>
-          <Form.Item label="Alto" name="height">
-            <InputNumber min={SHAPES_DEFAULT_SIZE[nodo.attributes.type]} />
-          </Form.Item>
-          <Form.Item label="Ancho" name="width">
-            <InputNumber min={SHAPES_DEFAULT_SIZE[nodo.attributes.type]} />
-          </Form.Item>
-        </Form>
+        <div>
+          <Form
+            form={form}
+            layout="vertical"
+            onValuesChange={changeText}
+            id={nodo.id}
+          >
+            <Form.Item label="Texto" name="texto">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Alto" name="height">
+              <InputNumber min={60} />
+            </Form.Item>
+            <Form.Item label="Ancho" name="width">
+              <InputNumber min={60} />
+            </Form.Item>
+            {['PANTALLA', 'SERVICIO'].includes(
+              SHAPES_NODES_INVERSE[nodo.attributes.type],
+            ) && (
+              <Form.Item
+                label={
+                  'Caracteristicas de ' +
+                  SHAPES_NODES_INVERSE[nodo.attributes.type]
+                }
+                name={'caracteristicas'}
+              >
+                <Input />
+              </Form.Item>
+            )}
+          </Form>
+          {nodo.attributes.type !== SHAPES_NODES.INICIO && (
+            <Button
+              block
+              type="primary"
+              htmlType="button"
+              danger
+              onClick={() => deleteNode()}
+            >
+              Borrar Nodo
+            </Button>
+          )}
+        </div>
       )}
     </div>
   )
