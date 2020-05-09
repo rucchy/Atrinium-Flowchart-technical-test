@@ -1,10 +1,10 @@
 import { Form, Input, InputNumber } from 'antd'
 import React, { useEffect } from 'react'
-import { connect, useSelector } from 'react-redux'
 
 import { SHAPES_DEFAULT_SIZE } from './Nodes/constants'
+import { useSelector } from 'react-redux'
 
-const NodoForm = () => {
+export default () => {
   const nodo = useSelector((store) => store.FormReducer.node)
   const [form] = Form.useForm()
 
@@ -80,5 +80,3 @@ const NodoForm = () => {
     </div>
   )
 }
-
-export default connect(null, {})(NodoForm)
