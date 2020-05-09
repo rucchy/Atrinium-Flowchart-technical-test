@@ -60,12 +60,13 @@ export default () => {
         if (
           !isNaN(changedValues.height) &&
           changedValues.height >= SHAPES_DEFAULT_SIZE[nodo.attributes.type]
-        )
+        ) {
           nodo.resize(allValues.width, changedValues.height)
-        sendServer('changeHeightNode', {
-          id: 1,
-          height: changedValues.height,
-        })
+          sendServer('changeHeightNode', {
+            id: 1,
+            height: changedValues.height,
+          })
+        }
         if (changedValues.height === null) {
           form.setFieldsValue({
             height: SHAPES_DEFAULT_SIZE[nodo.attributes.type],
