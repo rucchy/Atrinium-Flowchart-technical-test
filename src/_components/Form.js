@@ -18,7 +18,7 @@ export default () => {
 
   useEffect(() => {
     if (nodo) {
-      sendServer('getNodo', {
+      const datos = sendServer('getNodo', {
         diagramId: diagramId,
         nodeId: nodo.id,
         //Este parametro no habría que enviarlo pero lo utilizo para falsear los datos que devuelve el servidor
@@ -35,6 +35,11 @@ export default () => {
         texto: nodo.attr('text/text'),
         width: tamano.width,
         height: tamano.height,
+        caracteristicas: datos.caracteristicasPANTALLA
+          ? datos.caracteristicasPANTALLA
+          : datos.caracteristicasSERVICIO
+          ? datos.caracteristicasSERVICIO
+          : null,
       })
     }
   }, [form, diagramId, nodo])

@@ -27,7 +27,7 @@ const ejemplo = {
       position: { x: 200, y: 180 },
       size: { width: 120, height: 100 },
       texto: 'Servicio ejemplo',
-      caracteristicasSERVICIO: 'ejemplo de caracteristicas servicio',
+      caracteristicasSERVICIO: 'servicio carac servicio',
     },
     {
       id: '5',
@@ -35,7 +35,7 @@ const ejemplo = {
       position: { x: 660, y: 290 },
       size: { width: 115, height: 100 },
       texto: 'Pantalla ejemplo',
-      caracteristicasPANTALLA: 'ejemplo de caracteristicas pantalla',
+      caracteristicasPANTALLA: 'pantalla carac ejemplo',
     },
   ],
   links: [
@@ -86,9 +86,18 @@ const sendServer = (func, params) => {
       break
     case 'getNodo':
       response = { ...response, nodeId: params.nodeId }
-      if (['PANTALLA', 'SERVICIO'].includes(params.nodeType)) {
+      if (
+        params.diagramId === 2000 &&
+        ['PANTALLA', 'SERVICIO'].includes(params.nodeType)
+      ) {
         const cadena = 'caracteristicas' + params.nodeType
-        response = { ...response, [cadena]: 'texto ' + params.nodeType }
+        response = {
+          ...response,
+          [cadena]:
+            ejemplo.nodos[params.nodeType === 'PANTALLA' ? 4 : 3][
+              'caracteristicas' + params.nodeType
+            ],
+        }
       }
       break
     default:
