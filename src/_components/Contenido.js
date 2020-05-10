@@ -87,6 +87,59 @@ export default ({ idDiagram }) => {
       },
     })
 
+    if (idDiagram) {
+      let nodos = {}
+      response.nodos.forEach((nodo) => {
+        let nodoAux = null
+        switch (nodo.nodeType) {
+          case 'INICIO':
+            nodoAux = Inicio(nodo)
+            nodos = { ...nodos, [nodo.id]: nodoAux }
+            nodoAux.addTo(graphAux)
+            break
+          case 'FIN':
+            nodoAux = Fin(nodo)
+            nodos = { ...nodos, [nodo.id]: nodoAux }
+            nodoAux.addTo(graphAux)
+            break
+          case 'GATEWAY':
+            nodoAux = Gateway(nodo)
+            nodos = { ...nodos, [nodo.id]: nodoAux }
+            nodoAux.addTo(graphAux)
+            break
+          case 'PANTALLA':
+            nodoAux = Pantalla(nodo)
+            nodos = { ...nodos, [nodo.id]: nodoAux }
+            nodoAux.addTo(graphAux)
+            break
+          case 'SERVICIO':
+            nodoAux = Servicio(nodo)
+            nodos = { ...nodos, [nodo.id]: nodoAux }
+            nodoAux.addTo(graphAux)
+            break
+          default:
+        }
+      })
+      response.links.forEach((link) => {
+        const customLink = new Link({
+          source: {
+            id: link.sourceId,
+            port: nodos[link.sourceId].getPorts()[0].id,
+          },
+          target: { id: link.targetId },
+          attrs: {
+            '.connection': { strokeWidth: 2 },
+            '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' },
+          },
+        })
+        link.vertex &&
+          link.vertex.forEach((vertice, index) => {
+            customLink.insertVertex(index, vertice)
+          })
+        customLink.addTo(graphAux)
+      })
+    }
+
     paperAux.on('element:pointerclick', (element) => {
       dispatch(changeForm(element.model, response.id))
     })
