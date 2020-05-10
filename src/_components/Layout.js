@@ -1,32 +1,29 @@
-import Contenido from './Contenido'
+import { Route, BrowserRouter as Router, Switch } from 'react-router-dom'
+
+import Editor from './Editor'
+import Home from './Home'
 import { Layout } from 'antd'
-import MenuNodes from './MenuNodes'
-import NodoForm from './Form'
 import React from 'react'
 
-export default () => {
-  return (
-    <Layout className="layout">
-      <Layout.Header>
-        <h1> Prueba técnica Atrinium FrontEnd 2</h1>
-      </Layout.Header>
-      <Layout>
-        <Layout.Sider style={{ padding: 16 }}>
-          <MenuNodes />
-        </Layout.Sider>
-        <Layout.Content className="site-layout-content">
-          <div className="container">
-            <Contenido />
-          </div>
-        </Layout.Content>
-        <Layout.Sider style={{ padding: 16 }}>
-          <NodoForm />
-        </Layout.Sider>
-      </Layout>
+export default () => (
+  <Layout className="layout">
+    <Layout.Header>
+      <h1>
+        <a href="/">Prueba técnica Atrinium FrontEnd 2</a>
+      </h1>
+    </Layout.Header>
+    <Router>
+      <Switch>
+        <Route path="/nuevo-diagrama" component={Editor} />
+        <Route path="/ejemplo">
+          <Editor idDiagram={2000} />
+        </Route>
+        <Route path="/" component={Home} />
+      </Switch>
+    </Router>
 
-      <Layout.Footer style={{ textAlign: 'center' }}>
-        Chema Ruano ©2020
-      </Layout.Footer>
-    </Layout>
-  )
-}
+    <Layout.Footer style={{ textAlign: 'center' }}>
+      Chema Ruano ©2020
+    </Layout.Footer>
+  </Layout>
+)
