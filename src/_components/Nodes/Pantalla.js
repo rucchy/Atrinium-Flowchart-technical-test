@@ -1,10 +1,11 @@
 import Out from '../Ports/Out'
 import { Rect } from 'jointjs/src/shapes/basic'
 
-export default () => {
+export default (nodo) => {
   const pantalla = new Rect({
-    position: { x: 400, y: 180 },
-    size: { width: 80, height: 80 },
+    id: nodo ? nodo.id : null,
+    position: nodo ? nodo.position : { x: 400, y: 180 },
+    size: nodo ? nodo.size : { width: 80, height: 80 },
     ports: {
       groups: Out(),
     },
@@ -16,7 +17,7 @@ export default () => {
       fill: '#FFE599',
     },
     text: {
-      text: 'Pantalla',
+      text: nodo ? nodo.texto : 'Pantalla',
       fill: 'black',
     },
   })

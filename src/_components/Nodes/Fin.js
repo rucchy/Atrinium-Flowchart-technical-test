@@ -1,9 +1,10 @@
 import { Circle } from 'jointjs/src/shapes/basic'
 
-export default () => {
+export default (nodo) => {
   const fin = new Circle({
-    position: { x: 100, y: 120 },
-    size: { width: 60, height: 60 },
+    id: nodo ? nodo.id : null,
+    position: nodo ? nodo.position : { x: 100, y: 120 },
+    size: nodo ? nodo.size : { width: 60, height: 60 },
   })
 
   fin.attr({
@@ -11,7 +12,7 @@ export default () => {
       fill: '#F8CECC',
     },
     text: {
-      text: 'Fin',
+      text: nodo ? nodo.texto : 'Fin',
       fill: 'black',
     },
   })
